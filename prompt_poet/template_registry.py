@@ -5,6 +5,7 @@ import os
 
 import jinja2 as j2
 from cachetools import TTLCache
+from jinja2 import BaseLoader
 
 CACHE_MAX_SIZE = 100
 CACHE_TTL_SECS = 30
@@ -45,6 +46,7 @@ class TemplateRegistry:
         template_dir: str,
         package_name: str = None,
         use_cache: bool = False,
+        template_loader: BaseLoader = None,
     ) -> j2.Template:
         """Get template from cache or load from disk.
 
@@ -70,11 +72,11 @@ class TemplateRegistry:
             package_name=package_name,
         )
 
-        load_from_disk = not use_cache or cache_key not in self._cache
+        reload = not use_cache or cache_key not in self._cache
 
-        if load_from_disk:
+        if reload:
             self._cache[cache_key] = self._load_template(
-                template_name, template_dir=template_dir, package_name=package_name
+                template_name, template_dir=template_dir, package_name=package_name, template_loader = template_loader
             )
 
         return self._cache[cache_key]
@@ -100,6 +102,7 @@ class TemplateRegistry:
         template_name: str,
         template_dir: str = None,
         package_name: str = None,
+        template_loader: BaseLoader = None,
     ) -> j2.Template:
         """Load template from disk."""
         loader = None
@@ -113,6 +116,8 @@ class TemplateRegistry:
                 loader = j2.PackageLoader(
                     package_name=package_name, package_path=template_dir
                 )
+            elif template_loader is not None:
+                loader = template_loader
             else:
                 loader = j2.FileSystemLoader(searchpath=template_dir)
         except j2.TemplateNotFound as ex:

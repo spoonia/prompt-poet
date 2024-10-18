@@ -3,6 +3,7 @@ import pytest
 
 from examples.cai_helpers import CAIMessage
 import jinja2 as j2
+from jinja2 import FunctionLoader
 from pp_exceptions import TruncationError
 from prompt import Prompt
 from tiktoken import get_encoding
@@ -484,3 +485,21 @@ def test_tiktoken_encoding_name():
     )
     prompt.tokenize()
     assert prompt.tokens
+
+def test_custom_loader():
+    def load_template(filename: str):
+        path = os.path.abspath(
+            os.path.join(CWD, "templates", filename),
+        )
+        with open(path) as f:
+            contents = f.read()
+        return contents
+
+    prompt = Prompt(
+        template_data={},
+        template_path=os.path.abspath(
+            os.path.join(CWD, "templates", "section_prompt.yml.j2"),
+        ),
+        template_loader=FunctionLoader(load_template)
+    )
+    assert prompt.string == "Raw string of section_aRaw string of section_b"

@@ -12,7 +12,7 @@ with open(os.path.join(here, "VERSION")) as version_file:
     version = version_file.read().strip()
 
 setup(
-    name="prompt_poet",
+    name="spoonia/prompt_poet",
     version=version,
     packages=find_packages(include=["prompt_poet", "prompt_poet.*"]),
     include_package_data=True,
@@ -23,12 +23,12 @@ setup(
         "cachetools==5.3.3",
         "tiktoken==0.7.0",
     ],
-    author="James Groeneveld",
-    author_email="james@character.ai",
+    author="Sandeep Poonia",
+    author_email="sandeep.poonia.90@gmail.com",
     description="Streamlines and simplifies prompt design for both developers and non-technical users with a low code approach.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/character-ai/prompt-poet",
+    url="https://github.com/spoonia/prompt-poet",
     python_requires=">=3.10",
     license="MIT",
 )

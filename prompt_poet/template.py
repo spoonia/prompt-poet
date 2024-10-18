@@ -4,6 +4,8 @@ import logging
 import os
 
 import jinja2 as j2
+from jinja2 import BaseLoader
+
 from template_registry import TemplateRegistry
 
 
@@ -28,6 +30,7 @@ class Template:
         logger: logging.LoggerAdapter = None,
         from_cache: bool = False,
         from_examples: bool = False,
+        template_loader: BaseLoader = None,
     ):
         """Initialize the template object."""
         if raw_template and template_path:
@@ -49,6 +52,7 @@ class Template:
         self._from_examples = from_examples
         self._template = None
         self._rendered_template = None
+        self._template_loader = template_loader
 
         self._load_template()
 
@@ -108,6 +112,7 @@ class Template:
                 template_dir=self._template_dir,
                 package_name=self._package_name,
                 use_cache=self._from_cache,
+                template_loader=self._template_loader
             )
 
     def _parse_template_path(

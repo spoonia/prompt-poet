@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from functools import reduce
 
 import yaml
+from jinja2 import BaseLoader
+
 from examples import cai_helpers
 from pp_exceptions import TruncationError
 from template import Template
@@ -78,6 +80,7 @@ class Prompt:
     :escaped_single_quote: The escaped representation of a single quote in the template.
     :allow_token_overrides: A boolean indicating whether to allow token encoding to be set
         in the template. Not safe for production use.
+    :template_loader: Provide custom loader to load the templates
     """
 
     def __init__(
@@ -101,6 +104,7 @@ class Prompt:
         single_quote: str = "'",
         escaped_single_quote: str = "'",
         allow_token_overrides: bool = False,
+        template_loader: BaseLoader = None,
     ):
         """Initialize the prompt object."""
         self._template = Template(
@@ -110,6 +114,7 @@ class Prompt:
             logger=logger,
             from_cache=from_cache,
             from_examples=from_examples,
+            template_loader=template_loader,
         )
         self._template_data = copy.deepcopy(template_data)
         self._provided_logger = logger
